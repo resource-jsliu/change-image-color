@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript">
+
+        function changeImgColor(imgUrl,rgb_color,canvasId,picWidth,picHeight) {
+            var myImage = new Image();
+            var canvas = document.getElementById(canvasId);
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                ctx.fillStyle = rgb_color;
+                myImage.onload = function() {
+                    ctx.drawImage(myImage, 0, 0);
+
+                    /*setColor*/
+                    rgb_color = rgb_color || '#727272';
+                    var newR = parseInt('0x' + rgb_color.substr(1, 2));
+                    var newG = parseInt('0x' + rgb_color.substr(3, 2));
+                    var newB = parseInt('0x' + rgb_color.substr(5, 2));
+                    myImage = ctx.getImageData(0, 0, picWidth, picHeight);
+                    var pixels = myImage.data;
+                    for (var i=0; i<pixels.length; i+=4 ) {
+                        pixels[i] = newR;
+                        pixels[i+1] = newG;
+                        pixels[i+2] = newB;
+                    }
+                   /* put color data*/
+                    ctx.putImageData(myImage, 0, 0);
+                }
+                myImage.src = imgUrl;
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<p>
+    <img id="myPhoto" src="image/test.png">
+</p>
+
+<div>
+    <canvas id="myCanvas" width="50" height="50"> </canvas>
+</div>
+
+
+<script>
+    changeImgColor("image/test.png","#00D2DB","myCanvas",50,50);
+</script>
+</body>
+
+</html>
+

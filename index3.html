@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+
+<div id="box" style=" border: 1px solid red; text-align: center;">
+
+</div>
+<script type="text/javascript">
+    function displayImage(imgUrl,rgbColor,callback) {
+        var myImage = new Image();
+        myImage.src = imgUrl;
+        var rgb_color = rgbColor || '#727272';
+        var newR = parseInt('0x' + rgb_color.substr(1, 2));
+        var newG = parseInt('0x' + rgb_color.substr(3, 2));
+        var newB = parseInt('0x' + rgb_color.substr(5, 2));
+        myImage.onload = function () {
+            var width = myImage.width;
+            var height = myImage.height;
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+            // 将源图片复制到画布上
+            console.log(canvas);
+            ctx.drawImage(myImage, 0, 0, width, height);
+            myImage = ctx.getImageData(0, 0, width, height);
+            console.log(myImage);
+            var pixels = myImage.data;
+
+            /*setColor*/
+            for (var i = 0; i < pixels.length; i += 4) {
+                pixels[i] = newR;
+                pixels[i + 1] = newG;
+                pixels[i + 2] = newB;
+            }
+            // 将修改后的代码复制回画布中
+            ctx.putImageData(myImage, 0, 0);
+            // 图片导出为 png 格式
+            var type = 'png';
+            var imgData = canvas.toDataURL(type);
+            // console.log(imgData); // 生成base64
+            callback && callback(imgData);
+        }
+    }
+</script>
+<script>
+    displayImage("image/test.png","#00D2DB",function (data) {
+        var str= '<img src="'+data+'">';
+        var child = document.createElement('div');
+        child.innerHTML = str;
+        child = child.firstChild;
+        document.getElementById('box').appendChild(child);
+    });
+</script>
+</body>
+
+</html>
+
